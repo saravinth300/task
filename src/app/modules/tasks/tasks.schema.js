@@ -12,9 +12,3 @@ export const createTaskSchema = z.object({
   }),
 });
 
-export const updateTaskSchema = z.object({
-  body: z.object({
-    status: z.enum(["pending", "ongoing", "completed"]).optional(),
-    priority: z.enum(["high", "medium", "low"]).optional(),
-  }),
-});

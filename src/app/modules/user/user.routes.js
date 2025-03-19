@@ -5,7 +5,7 @@ import {
   getUsers,
   updateUserById,
 } from "./user.controller.js";
-import validateResource from "../../../middlewares/validateResource.js";
+import validateResource from "../../../middleware/validateResource.js"
 import createUserSchema from "./user.schema.js";
 
 const userRouter = Router();

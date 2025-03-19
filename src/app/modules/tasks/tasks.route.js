@@ -1,13 +1,17 @@
-import express from "express";
-import { createTask, getTasks, getTaskById, updateTask } from "../controllers/taskController.js";
-import validate from "../middlewares/validate.js";
-import { createTaskSchema, updateTaskSchema } from "../validations/taskValidation.js";
+import {Router} from "express";
+import { createTask, getTasks, getTaskById, updateTask } from "./tasks.controller.js";
+import validateResource from "../../../middleware/validateResource.js";
+import {createTaskSchema} from "./tasks.schema.js";
 
-const router = express.Router();
 
-router.post("/task", validate(createTaskSchema), createTask);
-router.get("/task", getTasks);
-router.get("/task/:id", getTaskById);
-router.put("/task/:id", validate(updateTaskSchema), updateTask);
+const taskRouter = Router();
 
-export default router;
+taskRouter.post("/", validateResource(createTaskSchema), createTask);
+
+taskRouter.get("/", getTasks);
+
+taskRouter.get("/:id", getTaskById);
+
+taskRouter.put("/:id", updateTask);
+
+export default taskRouter;

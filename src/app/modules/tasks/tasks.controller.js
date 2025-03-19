@@ -1,59 +1,58 @@
-import Task from "../models/Task.js";
-
+import Task from "./tasks.model.js";
+import {
+  successResponse,
+  validationResponse,
+  serverErrorResponse, 
+  notFoundResponse,
+} from "../../helpers/apiResponse.js";
 
 export const createTask = async (req, res) => {
   try {
     const { name, priority, status, dueDate, createdBy } = req.body;
+    if (!name || !priority || !status || !dueDate || !createdBy) {
+      return validationResponse(res, "All fields are required");
+    }
+
     const newTask = new Task({ name, priority, status, dueDate, createdBy });
     await newTask.save();
-    res.status(201).json({ success: true, message: "Task created successfully", task: newTask });
+    return successResponse(res, "Task created successfully", newTask);
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return serverErrorResponse(res, error.message);
   }
 };
-
 
 export const getTasks = async (req, res) => {
   try {
     const { search, priority, status } = req.query;
     let query = {};
 
-    if (search) {
-      query.name = { $regex: search, $options: "i" };
-    }
-    if (priority) {
-      query.priority = priority;
-    }
-    if (status) {
-      query.status = status;
-    }
+    if (search) query.name = { $regex: search, $options: "i" };
+    if (priority) query.priority = priority;
+    if (status) query.status = status;
 
     const tasks = await Task.find(query);
-    res.status(200).json({ success: true, tasks });
+    return successResponse(res, "Tasks fetched successfully", tasks);
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return serverErrorResponse(res, error.message);
   }
 };
 
 export const getTaskById = async (req, res) => {
   try {
     const task = await Task.findById(req.params.id);
-    if (!task) return res.status(404).json({ success: false, message: "Task not found" });
-
-    res.status(200).json({ success: true, task });
+    if (!task) return notFoundResponse(res, "Task not found");
+    return successResponse(res, "Task fetched successfully", task);
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return serverErrorResponse(res, error.message);
   }
 };
-
 
 export const updateTask = async (req, res) => {
   try {
     const updatedTask = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!updatedTask) return res.status(404).json({ success: false, message: "Task not found" });
-
-    res.status(200).json({ success: true, message: "Task updated successfully", task: updatedTask });
+    if (!updatedTask) return notFoundResponse(res, "Task not found");
+    return successResponse(res, "Task updated successfully", updatedTask);
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return serverErrorResponse(res, error.message);
   }
 };

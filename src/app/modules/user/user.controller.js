@@ -1,8 +1,8 @@
-import User from " ./user.model.js"
+import User from "./user.model.js"
 import {
   successResponse,
   serverErrorResponse,
-} from "../../helpers/apiResponse.js";
+} from "../../helpers/apiResponse.js"
 
 export const createUser = async (req, res) => {
   try {
